@@ -1,0 +1,36 @@
+#Here is code to make a graph that will plot the position (within the sequence of E.coli) against the GC content and a graph that will plot the position against the GC3 content.
+#I just had all of it in one script and then would hash out the code I didnt want to run or would press ctrl+enter.
+
+#load library
+library(ggplot2)
+
+#Load CSV
+file_path <- "mean_std_gc_gc3_ecoli.csv"
+data <- read.csv(file_path)
+
+#Extract columns
+position <- data$Position
+mean_gc_content <- data$mean_gc_content
+std_gc_content <- data$std_gc_content
+mean_gc3_content <-data$mean_gc3
+std_gc3_content <-data$std_gc3
+
+#Code for GC content graph
+gc_content_plot <-ggplot(data, aes(x = Position, y = mean_gc_content)) +
+  geom_errorbar(aes(ymin = mean_gc_content - std_gc_content, ymax= mean_gc_content + std_gc_content),
+              width = 0.2, color = "lightblue", show.legend = TRUE) +
+  geom_point(color = "blue", size = 1,show.legend = TRUE) +
+  labs(title = "Mean GC Content in comparison to the location of the gene sequence", x = "Position within sequence", y = "Mean GC Content(%)")+
+  theme_minimal()
+ 
+print(gc_content_plot)
+
+#Code for GC3 content graph
+gc3_content_plot <-ggplot(data, aes(x = Position, y = mean_gc3_content)) +
+  geom_errorbar(aes(ymin = mean_gc3_content - std_gc3_content, ymax= mean_gc3_content + std_gc3_content),
+                width = 0.2, color = "lightgreen", show.legend = TRUE) +
+  geom_point(color = "darkgreen", size = 1,show.legend = TRUE) +
+  labs(title = "Mean GC Content at the 3rd Codon Position compared to the location of the gene sequence", x = "Position within the sequence", y = "Mean GC3 Content(%)")+
+  theme_minimal()
+
+print(gc3_content_plot)
