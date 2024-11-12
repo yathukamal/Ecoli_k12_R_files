@@ -1,0 +1,28 @@
+#Import library for script
+library(biomartr)
+
+#Get current directory so we are working in the right space
+curr_dir <- setwd("current_directory")
+curr_dir <- getwd()
+
+#List all files in the current directory that match "one_per_genus.csv
+allfiles <- list.files(curr_dir, pattern = "one_per_genus\\.csv", full.names = TRUE)
+
+#Loop through all files that match the pattern and read the csv into a data frame
+for(f in allfiles) {
+  data1 <- read.csv(f, header = TRUE)
+
+  df1 <- data.frame(data1)
+
+#Loop through each assembly accession in the "assembly_accession" column
+  df1$assembly_accession <- data1$assembly_accession
+
+#Check if genome data is available in refseq for the organism and create a file for saving the data
+  for (a in df1$assembly_accession) {
+    is.genome.available(db = "refseq", organism = a)
+    pathname <- paste0(f, "_complete.csv")
+
+#Get the cds for the organism from refseq
+    HS.cds.refseq <- getCDS(db = "refseq", organism = a, path = file.path(a), gunzip = TRUE, skip_bacteria = FALSE)
+  }
+}
